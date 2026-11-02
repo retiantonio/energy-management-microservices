@@ -1,0 +1,162 @@
+services:
+
+  # --- DATABASE --------------------------------------------------------------
+
+  credential-db:
+    build: ./db/credential-db
+    container_name: credential-db
+
+    environment:
+      POSTGRES_DB: credential_db
+      POSTGRES_USER: credential_user
+      POSTGRES_PASSWORD: credential_pass
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U credential_user -d credential_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - credential-data:/var/lib/postgresql/data
+
+  user-db:
+    build: ./db/user-db
+    container_name: user-db
+
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_pass
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - user-data:/var/lib/postgresql/data
+
+  device-db:
+    build: ./db/device-db
+    container_name: device-db
+
+    environment:
+      POSTGRES_DB: device_db
+      POSTGRES_USER: device_user
+      POSTGRES_PASSWORD: device_pass
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U device_user -d device_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+    ports:
+      - "5435:5432"
+
+    volumes:
+      - device-data:/var/lib/postgresql/data
+
+  # --- GATEWAY ---------------------------------------------------------------
+  traefik:
+    image: traefik:v3.7
+    container_name: traefik
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.insecure=true          # dashboard on :8080, development only
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # --- BACKEND -------------------------------------------------------------
+
+  auth-service:
+    build: ./authentication-service/authentication-service
+    container_name: auth-service
+
+    environment:
+      DB_URL: jdbc:postgresql://credential-db:5432/credential_db
+      DB_USER: credential_user
+      DB_PASSWORD: credential_pass
+      USER_SERVICE_URL: http://user-service:8082
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MINUTES: 60
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on:
+      credential-db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.auth.rule=PathPrefix(`/auth/login`) || PathPrefix(`/auth/register`)"
+      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.routers.auth.middlewares=cors"
+      - "traefik.http.services.auth.loadbalancer.server.port=8081"
+ 
+      - "traefik.http.middlewares.jwt-auth.forwardauth.address=http://auth-service:8081/auth/validate"
+      - "traefik.http.middlewares.jwt-auth.forwardauth.authResponseHeaders=X-User-Id,X-User-Role"
+ 
+      # Change the origin to wherever your frontend is served from.
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=Authorization,Content-Type"
+      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
+ 
+  user-service:
+    build: ./user-service/user-service
+    container_name: user-service
+    environment:
+      DB_URL: jdbc:postgresql://user-db:5432/user_db
+      DB_USER: user_user
+      DB_PASSWORD: user_pass
+      DEVICE_SERVICE_URL: http://device-service:8083
+      AUTH_SERVICE_URL: http://auth-service:8081
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on:
+      user-db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
+      - "traefik.http.routers.users.entrypoints=web"
+      - "traefik.http.routers.users.middlewares=cors,jwt-auth"
+      - "traefik.http.services.users.loadbalancer.server.port=8082"
+
+  device-service:
+    build: ./device-service/device-service
+    container_name: device-service
+    environment:
+      DB_URL: jdbc:postgresql://device-db:5432/device_db
+      DB_USER: device_user
+      DB_PASSWORD: device_pass
+      USER_SERVICE_URL: http://user-service:8082
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    depends_on:
+      device-db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.devices.rule=PathPrefix(`/devices`)"
+      - "traefik.http.routers.devices.entrypoints=web"
+      - "traefik.http.routers.devices.middlewares=cors,jwt-auth"
+      - "traefik.http.services.devices.loadbalancer.server.port=8083"
+
+  
+
+volumes:
+  credential-data:
+  user-data:
+  device-data:
