@@ -1,0 +1,119 @@
+@if (session(); as user) {
+  <header class="page-header">
+    <p class="eyebrow">{{ user.role }} WORKSPACE</p>
+    <h1>Welcome, {{ user.username }}</h1>
+    @if (user.role === 'ADMIN') {
+      <p>Manage your device inventory and users from one place.</p>
+    } @else {
+      <p>View and find the devices assigned to your account.</p>
+    }
+  </header>
+
+  <section class="overview-section" aria-labelledby="devices-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Inventory</p>
+        <h2 id="devices-heading">
+          {{ user.role === 'ADMIN' ? 'Devices' : 'My devices' }}
+          <span class="item-count">{{ devices().length }}</span>
+        </h2>
+      </div>
+      <a routerLink="/dashboard/devices">Open device management</a>
+    </div>
+
+    <div class="search-form">
+      <label for="overview-device-search">Search devices</label>
+      <div class="search-controls">
+        <input
+          id="overview-device-search"
+          name="overviewDeviceSearchTerm"
+          type="search"
+          placeholder="Name, description, owner, or energy use"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+        @if (searchTerm()) {
+          <button class="button-secondary" type="button" (click)="clearSearch()">Clear</button>
+        }
+      </div>
+    </div>
+
+    @if (deviceError(); as error) {
+      <app-http-error-notice [details]="error" />
+    }
+
+    @if (isLoadingDevices()) {
+      <p class="load-status" role="status">Loading devices…</p>
+    } @else if (devices().length === 0) {
+      <p class="empty-state">
+        @if (searchTerm()) {
+          No devices match that search.
+        } @else {
+          No devices found.
+        }
+      </p>
+    } @else {
+      <div class="card-grid">
+        @for (device of devices(); track device.id) {
+          <app-device-overview-card
+            [device]="device"
+            [owner]="ownerLabel(device.ownerUserId)"
+          />
+        }
+      </div>
+    }
+  </section>
+
+  @if (isAdmin()) {
+    <section class="overview-section" aria-labelledby="users-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Directory</p>
+          <h2 id="users-heading">
+            Users <span class="item-count">{{ users().length }}</span>
+          </h2>
+        </div>
+        <a routerLink="/dashboard/users">Open user management</a>
+      </div>
+
+      <div class="search-form">
+        <label for="overview-user-search">Search users</label>
+        <div class="search-controls">
+          <input
+            id="overview-user-search"
+            name="overviewUserSearchTerm"
+            type="search"
+            placeholder="Name, email, address, role, or ID"
+            [ngModel]="usersSearchTerm()"
+            (ngModelChange)="usersSearchTerm.set($event)"
+          />
+          @if (usersSearchTerm()) {
+            <button class="button-secondary" type="button" (click)="clearUsersSearch()">Clear</button>
+          }
+        </div>
+      </div>
+
+      @if (usersError(); as error) {
+        <app-http-error-notice [details]="error" />
+      }
+
+      @if (isLoadingUsers()) {
+        <p class="load-status" role="status">Loading users…</p>
+      } @else if (users().length === 0) {
+        <p class="empty-state">
+          @if (usersSearchTerm()) {
+            No users match that search.
+          } @else {
+            No users found.
+          }
+        </p>
+      } @else {
+        <div class="card-grid">
+          @for (directoryUser of users(); track directoryUser.uuid) {
+            <app-user-overview-card [user]="directoryUser" />
+          }
+        </div>
+      }
+    </section>
+  }
+}

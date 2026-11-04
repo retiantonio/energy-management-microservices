@@ -1,0 +1,215 @@
+<header class="page-header">
+  <p class="eyebrow">ADMIN WORKSPACE</p>
+  <h1>User management</h1>
+  <p>Search user accounts, update their details, or create and remove accounts.</p>
+</header>
+
+<section class="toolbar" aria-label="User search and actions">
+  <div class="search-form">
+    <label for="user-search">Search users</label>
+    <span class="search-controls">
+      <input
+        id="user-search"
+        name="searchTerm"
+        type="search"
+        placeholder="Name, email, address, role, or ID"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+      @if (searchTerm()) {
+        <button class="button-secondary" type="button" (click)="clearSearch()">Clear</button>
+      }
+    </span>
+  </div>
+
+  <button type="button" (click)="openCreateForm()">
+    Add user
+  </button>
+</section>
+
+<dialog
+  #createUserDialog
+  class="form-panel create-dialog"
+  aria-labelledby="create-user-title"
+  (close)="onCreateFormClosed()"
+>
+    <h2 id="create-user-title">Create user</h2>
+    <form class="user-form" (ngSubmit)="createUser()">
+      <label>
+        Role
+        <select name="createRole" [(ngModel)]="createForm.role">
+          <option value="CLIENT">Client</option>
+          <option value="ADMIN">Administrator</option>
+        </select>
+      </label>
+      <label>
+        Username
+        <input
+          name="createUsername"
+          type="text"
+          minlength="4"
+          maxlength="20"
+          autocomplete="username"
+          [(ngModel)]="createForm.username"
+          required
+        />
+      </label>
+      <label>
+        Password
+        <input
+          name="createPassword"
+          type="password"
+          minlength="8"
+          maxlength="72"
+          autocomplete="new-password"
+          [(ngModel)]="createForm.password"
+          required
+        />
+      </label>
+      <label>
+        Name
+        <input
+          name="createName"
+          type="text"
+          minlength="5"
+          maxlength="20"
+          [(ngModel)]="createForm.name"
+          required
+        />
+      </label>
+      <label>
+        Email
+        <input
+          name="createEmail"
+          type="email"
+          maxlength="100"
+          autocomplete="email"
+          [(ngModel)]="createForm.email"
+          required
+        />
+      </label>
+      <label>
+        Address
+        <input
+          name="createAddress"
+          type="text"
+          minlength="5"
+          maxlength="255"
+          autocomplete="street-address"
+          [(ngModel)]="createForm.address"
+          required
+        />
+      </label>
+      @if (createUserError(); as error) {
+        <app-http-error-notice [details]="error" />
+      }
+      <div class="form-actions">
+        <button type="submit" [disabled]="isSaving()">Create user</button>
+        <button class="button-secondary" type="button" (click)="closeCreateForm()">Cancel</button>
+      </div>
+    </form>
+</dialog>
+
+@if (errorDetails(); as error) {
+  <app-http-error-notice [details]="error" />
+}
+
+@if (successMessage()) {
+  <p class="notice notice-success" role="status">{{ successMessage() }}</p>
+}
+
+@if (isLoading()) {
+  <p class="load-status" role="status">Loading users…</p>
+} @else if (users().length === 0) {
+  <section class="empty-state">
+    <h2>No users found</h2>
+    <p>
+      @if (searchTerm()) {
+        Try another search or clear it.
+      } @else {
+        Create a user to get started.
+      }
+    </p>
+  </section>
+} @else {
+  <section class="user-grid" aria-label="Users">
+    @for (user of users(); track user.uuid) {
+      @if (editingUserId() === user.uuid) {
+        <article class="user-card edit-card">
+          <h2>Edit {{ user.name }}</h2>
+          <form class="user-form" (ngSubmit)="saveChanges(user)">
+            <label>
+              Username
+              <input
+                name="editUsername"
+                type="text"
+                minlength="4"
+                maxlength="20"
+                autocomplete="username"
+                placeholder="Leave blank to keep current username"
+                [(ngModel)]="editForm.username"
+              />
+            </label>
+            <label>
+              New password
+              <input
+                name="editPassword"
+                type="password"
+                minlength="8"
+                maxlength="72"
+                autocomplete="new-password"
+                placeholder="Leave blank to keep current password"
+                [(ngModel)]="editForm.password"
+              />
+            </label>
+            <label>
+              Name
+              <input
+                name="editName"
+                type="text"
+                minlength="5"
+                maxlength="20"
+                [(ngModel)]="editForm.name"
+                required
+              />
+            </label>
+            <label>
+              Email
+              <input
+                name="editEmail"
+                type="email"
+                maxlength="100"
+                [(ngModel)]="editForm.email"
+                required
+              />
+            </label>
+            <label>
+              Address
+              <input
+                name="editAddress"
+                type="text"
+                minlength="5"
+                maxlength="255"
+                [(ngModel)]="editForm.address"
+                required
+              />
+            </label>
+            <div class="form-actions">
+              <button type="submit" [disabled]="isSaving()">Save changes</button>
+              <button class="button-secondary" type="button" (click)="cancelEditing()">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </article>
+      } @else {
+        <app-user-management-card
+          [user]="user"
+          [isSaving]="isSaving()"
+          (edit)="startEditing(user)"
+          (delete)="deleteUser(user)"
+        />
+      }
+    }
+  </section>
+}

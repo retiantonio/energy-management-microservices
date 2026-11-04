@@ -1,5 +1,7 @@
-package com.retiantonio.authentication_service.component;
+package com.retiantonio.authentication_service.configuration;
 
+import com.retiantonio.authentication_service.component.InternalKeyFilter;
+import com.retiantonio.authentication_service.component.JwtAuthFilter;
 import com.retiantonio.authentication_service.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

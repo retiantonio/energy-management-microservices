@@ -1,0 +1,30 @@
+:host {
+  display: inline-flex;
+}
+
+.brand-mark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.brand-name {
+  color: var(--text);
+  font-size: 2rem;
+}
+
+.brand-name-accent {
+  color: var(--accent);
+}
+
+.brand-mark img {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+}

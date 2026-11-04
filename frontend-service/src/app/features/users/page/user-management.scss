@@ -1,0 +1,191 @@
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+
+.page-header > p:last-child {
+  margin-bottom: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.search-controls,
+.form-actions,
+.card-actions {
+  display: flex;
+  align-items: end;
+  gap: 0.65rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-form {
+  width: 100%;
+  max-width: 760px;
+}
+
+label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+.search-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.form-panel {
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+.create-dialog {
+  width: min(760px, calc(100vw - 2rem));
+  max-width: 760px;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.create-dialog::backdrop {
+  background: #102b4080;
+  backdrop-filter: blur(4px);
+}
+
+.form-panel h2,
+.edit-card > h2 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.user-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.create-dialog .user-form app-http-error-notice {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  align-items: center;
+  margin-top: 0.2rem;
+}
+
+.edit-card .form-actions button {
+  min-height: 36px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.user-grid {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 1rem;
+}
+
+.edit-card {
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.edit-card .user-form input,
+.edit-card .user-form select,
+.edit-card .user-form textarea {
+  font-weight: 500;
+  color: var(--text)
+}
+
+.empty-state {
+  padding: 1.5rem;
+  background: var(--surface-raised);
+}
+
+.empty-state h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.empty-state p,
+.load-status {
+  margin-bottom: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.notice {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
+.notice-error {
+  border-color: var(--error-border);
+  background: var(--error-surface);
+  color: var(--error);
+}
+
+.notice-success {
+  border-color: var(--success-border);
+  background: var(--success-surface);
+  color: var(--success);
+}
+
+.load-status {
+  margin: 1rem 0;
+}
+
+@media (max-width: 680px) {
+  .search-form {
+    max-width: none;
+  }
+
+  .search-controls {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .search-controls button {
+    width: auto;
+  }
+
+  .user-form {
+    grid-template-columns: 1fr;
+  }
+}

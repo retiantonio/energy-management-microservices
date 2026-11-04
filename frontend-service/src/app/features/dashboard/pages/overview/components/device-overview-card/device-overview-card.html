@@ -1,0 +1,27 @@
+<article class="overview-card device-card">
+  <div class="card-heading">
+    <div class="device-identity">
+      <span class="device-icon" aria-hidden="true">
+        <img src="/device-icon.svg" alt="" />
+      </span>
+      <div class="device-name-group">
+        <p class="card-kicker">Connected device</p>
+        <h3>{{ device.name }}</h3>
+      </div>
+    </div>
+    <span class="device-type">Device</span>
+  </div>
+  <p class="device-description">
+    {{ device.description || 'No description provided.' }}
+  </p>
+  <dl class="device-details">
+    <div>
+      <dt>Max energy consumption</dt>
+      <dd>{{ device.maxEnergyConsumption }}</dd>
+    </div>
+    <div>
+      <dt>Owner</dt>
+      <dd>{{ owner }}</dd>
+    </div>
+  </dl>
+</article>

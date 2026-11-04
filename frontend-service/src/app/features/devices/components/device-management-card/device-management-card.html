@@ -1,0 +1,59 @@
+<article class="device-card">
+  <div class="card-heading">
+    <div class="device-identity">
+      <span class="device-icon" aria-hidden="true">
+        <img src="/device-icon.svg" alt="" />
+      </span>
+      <div class="device-name-group">
+        <p class="card-kicker">Connected device</p>
+        <h2>{{ device.name }}</h2>
+      </div>
+    </div>
+    <span class="device-type">Device</span>
+  </div>
+
+  <p class="device-description">
+    {{ device.description || 'No description provided.' }}
+  </p>
+
+  <dl class="device-details">
+    <div>
+      <dt>Max energy consumption</dt>
+      <dd>{{ device.maxEnergyConsumption }}</dd>
+    </div>
+    <div>
+      <dt>Owner</dt>
+      <dd>{{ owner }}</dd>
+    </div>
+  </dl>
+
+  @if (isAdmin) {
+    <div class="device-card-footer">
+      <div class="card-actions">
+        <button type="button" (click)="edit.emit()">Edit</button>
+        <button class="button-secondary" type="button" (click)="assign.emit()">
+          {{ device.ownerUserId ? 'Change owner' : 'Assign owner' }}
+        </button>
+        @if (device.ownerUserId) {
+          <button
+            class="button-secondary"
+            type="button"
+            [disabled]="isSaving"
+            (click)="unassign.emit()"
+          >
+            Unassign
+          </button>
+        }
+        <button
+          class="button-danger"
+          type="button"
+          [disabled]="isSaving"
+          (click)="delete.emit()"
+        >
+          Delete
+        </button>
+      </div>
+      <ng-content />
+    </div>
+  }
+</article>

@@ -1,14 +1,20 @@
 package com.retiantonio.authentication_service.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UpdateCredentialsRequest(
 
     @Size(min = 4, max = 20, message = "Name must be between 5 and 20 characters")
+    @Schema(example = "updated_doe")
     String username,
 
     @Size(min = 8, max = 72, message = "Password must be between 8 and 72 characters.")
-    // TODO: also add a regex here for password strength
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number and a special character (@$!%*?&)"
+    )
+    @Schema(example = "UpdatedPass123!")
     String newPassword
 ) {}

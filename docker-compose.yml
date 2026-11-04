@@ -80,6 +80,17 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
+  # --- FRONTEND -------------------------------------------------------------
+  frontend-service:
+    build: ./frontend-service
+    container_name: frontend-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.priority=1"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
   # --- BACKEND -------------------------------------------------------------
 
   auth-service:
@@ -94,22 +105,29 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MINUTES: 60
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    
+    ports:
+      - "127.0.0.1:8081:8081"
+
     depends_on:
       credential-db:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
 
-      - "traefik.http.routers.auth.rule=PathPrefix(`/auth/login`) || PathPrefix(`/auth/register`)"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth/login`) || PathPrefix(`/api/auth/register`)"
       - "traefik.http.routers.auth.entrypoints=web"
-      - "traefik.http.routers.auth.middlewares=cors"
+
+      - "traefik.http.routers.auth.middlewares=cors, strip-api-prefix"
       - "traefik.http.services.auth.loadbalancer.server.port=8081"
- 
+      
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
+
       - "traefik.http.middlewares.jwt-auth.forwardauth.address=http://auth-service:8081/auth/validate"
       - "traefik.http.middlewares.jwt-auth.forwardauth.authResponseHeaders=X-User-Id,X-User-Role"
  
-      # Change the origin to wherever your frontend is served from.
-      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
+      # change if frontend not on docker
+      # - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
       - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
       - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=Authorization,Content-Type"
       - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
@@ -125,14 +143,16 @@ services:
       DEVICE_SERVICE_URL: http://device-service:8083
       AUTH_SERVICE_URL: http://auth-service:8081
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    ports:
+      - "127.0.0.1:8082:8082"
     depends_on:
       user-db:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.users.rule=PathPrefix(`/users`)"
+      - "traefik.http.routers.users.rule=PathPrefix(`/api/users`)"
       - "traefik.http.routers.users.entrypoints=web"
-      - "traefik.http.routers.users.middlewares=cors,jwt-auth"
+      - "traefik.http.routers.users.middlewares=cors,jwt-auth,strip-api-prefix"
       - "traefik.http.services.users.loadbalancer.server.port=8082"
 
   device-service:
@@ -144,14 +164,16 @@ services:
       DB_PASSWORD: device_pass
       USER_SERVICE_URL: http://user-service:8082
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+    ports:
+      - "127.0.0.1:8083:8083"
     depends_on:
       device-db:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.devices.rule=PathPrefix(`/devices`)"
+      - "traefik.http.routers.devices.rule=PathPrefix(`/api/devices`)"
       - "traefik.http.routers.devices.entrypoints=web"
-      - "traefik.http.routers.devices.middlewares=cors,jwt-auth"
+      - "traefik.http.routers.devices.middlewares=cors,jwt-auth,strip-api-prefix"
       - "traefik.http.services.devices.loadbalancer.server.port=8083"
 
   

@@ -1,0 +1,28 @@
+<aside class="sidebar">
+  <a class="brand" routerLink="/dashboard" aria-label="Dever home">
+    <app-dever-brand />
+  </a>
+
+  <p class="nav-label">Workspace</p>
+  <nav aria-label="Main navigation">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Overview
+    </a>
+    <a routerLink="/dashboard/devices" routerLinkActive="active">Devices</a>
+    @if (isAdmin()) {
+      <a routerLink="/dashboard/users" routerLinkActive="active">Users</a>
+    }
+  </nav>
+
+  <div class="account">
+    <div class="account-details">
+      <strong>{{ session()?.username }}</strong>
+      <span>{{ session()?.role }}</span>
+    </div>
+    <button type="button" (click)="logout()">Sign out</button>
+  </div>
+</aside>

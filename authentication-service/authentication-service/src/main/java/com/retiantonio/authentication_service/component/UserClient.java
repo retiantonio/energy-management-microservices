@@ -44,11 +44,11 @@ public class UserClient {
 
             return created.uuid();
         } catch (HttpClientErrorException.Conflict e) {
-            throw new AlreadyTakenException("E-mail is already taken.");
+            throw new AlreadyTakenException("E-mail or username is already taken.");
         } catch (HttpClientErrorException.BadRequest e) {
             throw new IllegalArgumentException("Profile data rejected by user service.");
         } catch (RestClientResponseException e) {
-            throw new RemoteServiceException("User service failed: " + e.getStatusCode());
+            throw new RemoteServiceException("User service failed: " + e.getStatusCode() + ".");
         } catch (ResourceAccessException e) {
             throw new ServiceUnavailableException("User service is unavailable");
         }

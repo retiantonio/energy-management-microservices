@@ -1,0 +1,10 @@
+<div class="notice notice-error" role="alert">
+  <p>{{ details().message }}</p>
+  @if (details().fieldErrors.length > 0) {
+    <ul>
+      @for (fieldError of details().fieldErrors; track fieldError.field) {
+        <li><strong>{{ fieldError.field }}:</strong> {{ fieldError.message }}</li>
+      }
+    </ul>
+  }
+</div>

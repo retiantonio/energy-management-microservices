@@ -1,0 +1,38 @@
+<article class="user-card">
+  <div class="card-heading">
+    <div class="user-identity">
+      <span class="user-avatar" aria-hidden="true">
+        {{ user.name ? user.name.charAt(0).toUpperCase() : '?' }}
+      </span>
+      <div class="user-name-group">
+        <p class="card-kicker">Account</p>
+        <h2>{{ user.name }}</h2>
+      </div>
+    </div>
+    <span class="role-badge">{{ user.role }}</span>
+  </div>
+
+  <dl class="user-details">
+    <div>
+      <dt>Email</dt>
+      <dd>{{ user.email }}</dd>
+    </div>
+    <div>
+      <dt>Address</dt>
+      <dd>{{ user.address }}</dd>
+    </div>
+    <div>
+      <dt>User ID</dt>
+      <dd class="user-id">{{ user.uuid }}</dd>
+    </div>
+  </dl>
+
+  <footer class="user-card-footer">
+    <div class="card-actions">
+      <button type="button" (click)="edit.emit()">Edit</button>
+      <button class="button-danger" type="button" [disabled]="isSaving" (click)="delete.emit()">
+        Delete
+      </button>
+    </div>
+  </footer>
+</article>

@@ -1,0 +1,199 @@
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+
+.page-header > p:last-child {
+  margin-bottom: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.search-controls,
+.form-actions {
+  display: flex;
+  align-items: end;
+  gap: 0.65rem;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-form {
+  width: 100%;
+  max-width: 680px;
+}
+
+label {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--text);
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-panel {
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+.create-dialog {
+  width: min(760px, calc(100vw - 2rem));
+  max-width: 760px;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.create-dialog::backdrop {
+  background: #102b4080;
+  backdrop-filter: blur(4px);
+}
+
+.form-panel h2,
+.edit-card > h2 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.device-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.create-dialog .device-form app-http-error-notice {
+  width: 100%;
+}
+
+.field-hint {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.form-actions {
+  align-items: center;
+  margin-top: 0.2rem;
+}
+
+.edit-card .form-actions button {
+  min-height: 36px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.device-grid {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+  gap: 1rem;
+}
+
+.edit-card {
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.edit-card .device-form input,
+.edit-card .device-form select,
+.edit-card .device-form textarea {
+  font-weight: 500;
+  color: var(--text)
+}
+
+.assignment-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.notice,
+.empty-state {
+  padding: 1rem 1.15rem;
+  border-radius: 10px;
+}
+
+.notice {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.notice-error {
+  border: 1px solid var(--error-border);
+  background: var(--error-surface);
+  color: var(--error);
+}
+
+.notice-success {
+  border: 1px solid var(--success-border);
+  background: var(--success-surface);
+  color: var(--success);
+}
+
+.load-status {
+  color: var(--text-muted);
+}
+
+.empty-state {
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  text-align: center;
+}
+
+.empty-state h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.empty-state p {
+  margin-bottom: 0;
+  color: var(--text-muted);
+}
+
+@media (max-width: 650px) {
+  .search-form {
+    max-width: none;
+  }
+
+  .search-controls {
+    flex-wrap: wrap;
+  }
+
+  .search-controls input {
+    flex-basis: 100%;
+  }
+}
