@@ -7,20 +7,24 @@
     <form (ngSubmit)="login()">
       <label for="username">
         Username
-        <input
-          id="username"
-          name="username"
-          type="text"
-          autocomplete="username"
-          placeholder="Enter your username"
-          [(ngModel)]="username"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            placeholder="Enter your username"
+            [(ngModel)]="username"
+            required
+          />
+        </span>
       </label>
 
       <label for="password">
         Password
-        <div class="password-input-wrapper">
+        <div class="password-input-wrapper field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-lock" /></svg>
           <input
             id="password"
             name="password"
@@ -55,6 +59,7 @@
       }
 
       <button type="submit" [disabled]="isSubmitting()">
+        <svg class="button-icon" aria-hidden="true"><use href="#icon-login" /></svg>
         {{ isSubmitting() ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>

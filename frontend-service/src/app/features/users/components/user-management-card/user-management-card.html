@@ -29,8 +29,12 @@
 
   <footer class="user-card-footer">
     <div class="card-actions">
-      <button type="button" (click)="edit.emit()">Edit</button>
+      <button type="button" (click)="edit.emit()">
+        <svg class="button-icon" aria-hidden="true"><use href="#icon-edit" /></svg>
+        Edit
+      </button>
       <button class="button-danger" type="button" [disabled]="isSaving" (click)="delete.emit()">
+        <svg class="button-icon" aria-hidden="true"><use href="#icon-trash" /></svg>
         Delete
       </button>
     </div>

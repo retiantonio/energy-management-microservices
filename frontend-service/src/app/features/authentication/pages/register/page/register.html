@@ -7,21 +7,25 @@
     <form (ngSubmit)="register()">
       <label for="username">
         Username
-        <input
-          id="username"
-          name="username"
-          type="text"
-          autocomplete="username"
-          minlength="4"
-          maxlength="20"
-          [(ngModel)]="username"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            minlength="4"
+            maxlength="20"
+            [(ngModel)]="username"
+            required
+          />
+        </span>
       </label>
 
       <label for="password">
         Password
-        <div class="password-input-wrapper">
+        <div class="password-input-wrapper field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-lock" /></svg>
           <input
             id="password"
             name="password"
@@ -48,42 +52,51 @@
 
       <label for="name">
         Name
-        <input
-          id="name"
-          name="name"
-          type="text"
-          autocomplete="name"
-          minlength="5"
-          maxlength="20"
-          [(ngModel)]="name"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            minlength="5"
+            maxlength="20"
+            [(ngModel)]="name"
+            required
+          />
+        </span>
       </label>
 
       <label for="email">
         Email
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          [(ngModel)]="email"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-mail" /></svg>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            [(ngModel)]="email"
+            required
+          />
+        </span>
       </label>
 
       <label for="address">
         Address
-        <input
-          id="address"
-          name="address"
-          type="text"
-          autocomplete="street-address"
-          minlength="5"
-          maxlength="255"
-          [(ngModel)]="address"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-map-pin" /></svg>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            autocomplete="street-address"
+            minlength="5"
+            maxlength="255"
+            [(ngModel)]="address"
+            required
+          />
+        </span>
       </label>
 
       @if (missingFieldsError()) {
@@ -95,6 +108,7 @@
       }
 
       <button type="submit" [disabled]="isSubmitting()">
+        <svg class="button-icon" aria-hidden="true"><use href="#icon-user-plus" /></svg>
         {{ isSubmitting() ? 'Creating account…' : 'Create account' }}
       </button>
     </form>

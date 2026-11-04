@@ -30,8 +30,12 @@
   @if (isAdmin) {
     <div class="device-card-footer">
       <div class="card-actions">
-        <button type="button" (click)="edit.emit()">Edit</button>
+        <button type="button" (click)="edit.emit()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-edit" /></svg>
+          Edit
+        </button>
         <button class="button-secondary" type="button" (click)="assign.emit()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-link" /></svg>
           {{ device.ownerUserId ? 'Change owner' : 'Assign owner' }}
         </button>
         @if (device.ownerUserId) {
@@ -41,6 +45,7 @@
             [disabled]="isSaving"
             (click)="unassign.emit()"
           >
+            <svg class="button-icon" aria-hidden="true"><use href="#icon-unlink" /></svg>
             Unassign
           </button>
         }
@@ -50,6 +55,7 @@
           [disabled]="isSaving"
           (click)="delete.emit()"
         >
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-trash" /></svg>
           Delete
         </button>
       </div>

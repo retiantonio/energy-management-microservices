@@ -14,22 +14,29 @@
   <div class="search-form">
     <label for="device-search">Search devices</label>
     <div class="search-controls">
-      <input
-        id="device-search"
-        name="searchTerm"
-        type="search"
-        placeholder="Name, description, owner, or energy use"
-        [ngModel]="searchTerm()"
-        (ngModelChange)="searchTerm.set($event)"
-      />
+      <span class="field-control">
+        <svg class="field-icon" aria-hidden="true"><use href="#icon-search" /></svg>
+        <input
+          id="device-search"
+          name="searchTerm"
+          type="search"
+          placeholder="Name, description, owner, or energy use"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </span>
       @if (searchTerm()) {
-        <button class="button-secondary" type="button" (click)="clearSearch()">Clear</button>
+        <button class="button-secondary" type="button" (click)="clearSearch()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+          Clear
+        </button>
       }
     </div>
   </div>
 
   @if (isAdmin()) {
     <button type="button" (click)="openCreateForm()">
+      <svg class="button-icon" aria-hidden="true"><use href="#icon-device" /></svg>
       Add device
     </button>
   }
@@ -45,48 +52,60 @@
     <form class="device-form" (ngSubmit)="createDevice()">
       <label>
         Device name
-        <input
-          name="createName"
-          type="text"
-          minlength="2"
-          maxlength="50"
-          [(ngModel)]="createForm.name"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-device" /></svg>
+          <input
+            name="createName"
+            type="text"
+            minlength="2"
+            maxlength="50"
+            [(ngModel)]="createForm.name"
+            required
+          />
+        </span>
       </label>
 
       <label>
         Description
-        <textarea
-          name="createDescription"
-          maxlength="150"
-          rows="2"
-          [(ngModel)]="createForm.description"
-        ></textarea>
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-text" /></svg>
+          <textarea
+            name="createDescription"
+            maxlength="150"
+            rows="2"
+            [(ngModel)]="createForm.description"
+          ></textarea>
+        </span>
       </label>
 
       <label>
         Max energy consumption
-        <input
-          name="createMaxEnergy"
-          type="number"
-          min="0.01"
-          step="any"
-          [(ngModel)]="createForm.maxEnergyConsumption"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-bolt" /></svg>
+          <input
+            name="createMaxEnergy"
+            type="number"
+            min="0.01"
+            step="any"
+            [(ngModel)]="createForm.maxEnergyConsumption"
+            required
+          />
+        </span>
       </label>
 
       <label>
         Owner (optional)
-        <select name="createOwner" [(ngModel)]="createForm.ownerUserId">
-          <option value="">Unassigned</option>
-          @for (user of users(); track user.uuid) {
-            <option [value]="user.uuid">
-              {{ user.name }} ({{ user.email }}) — {{ user.role }}
-            </option>
-          }
-        </select>
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <select name="createOwner" [(ngModel)]="createForm.ownerUserId">
+            <option value="">Unassigned</option>
+            @for (user of users(); track user.uuid) {
+              <option [value]="user.uuid">
+                {{ user.name }} ({{ user.email }}) — {{ user.role }}
+              </option>
+            }
+          </select>
+        </span>
       </label>
 
       @if (usersError(); as error) {
@@ -97,8 +116,14 @@
       }
 
       <div class="form-actions">
-        <button type="submit" [disabled]="isSaving()">Create device</button>
-        <button class="button-secondary" type="button" (click)="closeCreateForm()">Cancel</button>
+        <button type="submit" [disabled]="isSaving()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-device" /></svg>
+          Create device
+        </button>
+        <button class="button-secondary" type="button" (click)="closeCreateForm()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+          Cancel
+        </button>
       </div>
     </form>
 </dialog>
@@ -139,39 +164,57 @@
           <form class="device-form" (ngSubmit)="saveChanges(device)">
             <label>
               Device name
-              <input
-                name="editName"
-                type="text"
-                minlength="2"
-                maxlength="50"
-                [(ngModel)]="editForm.name"
-                required
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-device" /></svg>
+                <input
+                  name="editName"
+                  type="text"
+                  minlength="2"
+                  maxlength="50"
+                  [(ngModel)]="editForm.name"
+                  required
+                />
+              </span>
             </label>
             <label>
               Description
-              <textarea
-                name="editDescription"
-                maxlength="150"
-                rows="2"
-                [(ngModel)]="editForm.description"
-              ></textarea>
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-text" /></svg>
+                <textarea
+                  name="editDescription"
+                  maxlength="150"
+                  rows="2"
+                  [(ngModel)]="editForm.description"
+                ></textarea>
+              </span>
               <span class="field-hint">Leave blank to keep the current description.</span>
             </label>
             <label>
               Max energy consumption
-              <input
-                name="editMaxEnergy"
-                type="number"
-                min="0.01"
-                step="any"
-                [(ngModel)]="editForm.maxEnergyConsumption"
-                required
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-bolt" /></svg>
+                <input
+                  name="editMaxEnergy"
+                  type="number"
+                  min="0.01"
+                  step="any"
+                  [(ngModel)]="editForm.maxEnergyConsumption"
+                  required
+                />
+              </span>
             </label>
+
+            @if (editDeviceError(); as error) {
+              <app-http-error-notice [details]="error" />
+            }
+
             <div class="form-actions">
-              <button type="submit" [disabled]="isSaving()">Save changes</button>
+              <button type="submit" [disabled]="isSaving()">
+                <svg class="button-icon" aria-hidden="true"><use href="#icon-check" /></svg>
+                Save changes
+              </button>
               <button class="button-secondary" type="button" (click)="cancelEditing()">
+                <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
                 Cancel
               </button>
             </div>
@@ -193,16 +236,20 @@
             <form class="assignment-form" (ngSubmit)="assignDevice(device)">
               <label>
                 Assign to user
-                <select name="assignmentUserId" [(ngModel)]="assignmentUserId" required>
-                  <option value="" disabled>Select a user</option>
-                  @for (user of users(); track user.uuid) {
-                    <option [value]="user.uuid">
-                      {{ user.name }} ({{ user.email }}) — {{ user.role }}
-                    </option>
-                  }
-                </select>
+                <span class="field-control">
+                  <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+                  <select name="assignmentUserId" [(ngModel)]="assignmentUserId" required>
+                    <option value="" disabled>Select a user</option>
+                    @for (user of users(); track user.uuid) {
+                      <option [value]="user.uuid">
+                        {{ user.name }} ({{ user.email }}) — {{ user.role }}
+                      </option>
+                    }
+                  </select>
+                </span>
               </label>
               <button type="submit" [disabled]="isSaving() || isLoadingUsers()">
+                <svg class="button-icon" aria-hidden="true"><use href="#icon-check" /></svg>
                 Save owner
               </button>
             </form>

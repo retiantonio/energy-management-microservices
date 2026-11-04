@@ -41,6 +41,7 @@ export class DeviceManagementPage implements OnInit {
   protected readonly editingDeviceId = signal<string | null>(null);
   protected readonly assigningDeviceId = signal<string | null>(null);
   protected readonly deviceError = signal<HttpErrorDetails | null>(null);
+  protected readonly editDeviceError = signal<HttpErrorDetails | null>(null);
   protected readonly createDeviceError = signal<HttpErrorDetails | null>(null);
   protected readonly usersError = signal<HttpErrorDetails | null>(null);
   protected readonly successMessage = signal('');
@@ -123,6 +124,7 @@ export class DeviceManagementPage implements OnInit {
 
   protected startEditing(device: Device): void {
     this.editingDeviceId.set(device.id);
+    this.editDeviceError.set(null);
     this.editForm.name = device.name;
     this.editForm.description = device.description ?? '';
     this.editForm.maxEnergyConsumption = device.maxEnergyConsumption;
@@ -131,6 +133,7 @@ export class DeviceManagementPage implements OnInit {
 
   protected cancelEditing(): void {
     this.editingDeviceId.set(null);
+    this.editDeviceError.set(null);
   }
 
   protected saveChanges(device: Device): void {
@@ -143,6 +146,7 @@ export class DeviceManagementPage implements OnInit {
       return;
     }
 
+    this.editDeviceError.set(null);
     this.mutate(
       this.deviceService.update(device.id, {
         name,
@@ -151,6 +155,8 @@ export class DeviceManagementPage implements OnInit {
       }),
       'Device updated.',
       () => this.editingDeviceId.set(null),
+      (error) =>
+        this.editDeviceError.set(getHttpErrorDetails(error, 'Could not update device.')),
     );
   }
 

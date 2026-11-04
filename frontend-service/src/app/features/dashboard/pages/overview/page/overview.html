@@ -24,16 +24,22 @@
     <div class="search-form">
       <label for="overview-device-search">Search devices</label>
       <div class="search-controls">
-        <input
-          id="overview-device-search"
-          name="overviewDeviceSearchTerm"
-          type="search"
-          placeholder="Name, description, owner, or energy use"
-          [ngModel]="searchTerm()"
-          (ngModelChange)="searchTerm.set($event)"
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-search" /></svg>
+          <input
+            id="overview-device-search"
+            name="overviewDeviceSearchTerm"
+            type="search"
+            placeholder="Name, description, owner, or energy use"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
+          />
+        </span>
         @if (searchTerm()) {
-          <button class="button-secondary" type="button" (click)="clearSearch()">Clear</button>
+          <button class="button-secondary" type="button" (click)="clearSearch()">
+            <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+            Clear
+          </button>
         }
       </div>
     </div>
@@ -79,16 +85,22 @@
       <div class="search-form">
         <label for="overview-user-search">Search users</label>
         <div class="search-controls">
-          <input
-            id="overview-user-search"
-            name="overviewUserSearchTerm"
-            type="search"
-            placeholder="Name, email, address, role, or ID"
-            [ngModel]="usersSearchTerm()"
-            (ngModelChange)="usersSearchTerm.set($event)"
-          />
+          <span class="field-control">
+            <svg class="field-icon" aria-hidden="true"><use href="#icon-search" /></svg>
+            <input
+              id="overview-user-search"
+              name="overviewUserSearchTerm"
+              type="search"
+              placeholder="Name, email, address, role, or ID"
+              [ngModel]="usersSearchTerm()"
+              (ngModelChange)="usersSearchTerm.set($event)"
+            />
+          </span>
           @if (usersSearchTerm()) {
-            <button class="button-secondary" type="button" (click)="clearUsersSearch()">Clear</button>
+            <button class="button-secondary" type="button" (click)="clearUsersSearch()">
+              <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+              Clear
+            </button>
           }
         </div>
       </div>

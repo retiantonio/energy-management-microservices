@@ -30,7 +30,10 @@ export class UserManagementPage implements OnInit {
   protected readonly editingUserId = signal<string | null>(null);
   protected readonly errorDetails = signal<HttpErrorDetails | null>(null);
   protected readonly createUserError = signal<HttpErrorDetails | null>(null);
+  protected readonly editUserError = signal<HttpErrorDetails | null>(null);
   protected readonly successMessage = signal('');
+  protected readonly createPasswordVisible = signal(false);
+  protected readonly editPasswordVisible = signal(false);
 
   protected readonly searchTerm = signal('');
   protected readonly createForm: CreateUserRequest = {
@@ -66,6 +69,7 @@ export class UserManagementPage implements OnInit {
     this.isCreateFormOpen.set(true);
     this.errorDetails.set(null);
     this.createUserError.set(null);
+    this.createPasswordVisible.set(false);
     this.successMessage.set('');
     this.createUserDialog.nativeElement.showModal();
   }
@@ -75,10 +79,12 @@ export class UserManagementPage implements OnInit {
       this.createUserDialog.nativeElement.close();
     }
     this.isCreateFormOpen.set(false);
+    this.createPasswordVisible.set(false);
   }
 
   protected onCreateFormClosed(): void {
     this.isCreateFormOpen.set(false);
+    this.createPasswordVisible.set(false);
   }
 
   protected createUser(): void {
@@ -103,6 +109,7 @@ export class UserManagementPage implements OnInit {
         this.createForm.role = 'CLIENT';
         this.createForm.username = '';
         this.createForm.password = '';
+        this.createPasswordVisible.set(false);
         this.createForm.name = '';
         this.createForm.email = '';
         this.createForm.address = '';
@@ -113,6 +120,8 @@ export class UserManagementPage implements OnInit {
 
   protected startEditing(user: User): void {
     this.editingUserId.set(user.uuid);
+    this.editUserError.set(null);
+    this.editPasswordVisible.set(false);
     this.editForm.username = '';
     this.editForm.password = '';
     this.editForm.name = user.name;
@@ -124,6 +133,8 @@ export class UserManagementPage implements OnInit {
 
   protected cancelEditing(): void {
     this.editingUserId.set(null);
+    this.editUserError.set(null);
+    this.editPasswordVisible.set(false);
   }
 
   protected saveChanges(user: User): void {
@@ -131,6 +142,7 @@ export class UserManagementPage implements OnInit {
       return;
     }
 
+    this.editUserError.set(null);
     this.mutate(
       this.userService.update(user.uuid, {
         username: this.editForm.username.trim() || undefined,
@@ -140,7 +152,11 @@ export class UserManagementPage implements OnInit {
         address: this.editForm.address.trim(),
       }),
       'User updated.',
-      () => this.editingUserId.set(null),
+      () => {
+        this.editingUserId.set(null);
+        this.editPasswordVisible.set(false);
+      },
+      (error) => this.editUserError.set(getHttpErrorDetails(error, 'Could not update user.')),
     );
   }
 

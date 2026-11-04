@@ -20,9 +20,17 @@
 
   <div class="account">
     <div class="account-details">
-      <strong>{{ session()?.username }}</strong>
-      <span>{{ session()?.role }}</span>
+      <span class="account-avatar" aria-hidden="true">
+        {{ session()?.username?.charAt(0)?.toUpperCase() }}
+      </span>
+      <div class="account-identity">
+        <strong>{{ session()?.username }}</strong>
+        <span class="account-role">{{ session()?.role }}</span>
+      </div>
     </div>
-    <button type="button" (click)="logout()">Sign out</button>
+    <button type="button" (click)="logout()">
+      <svg class="button-icon" aria-hidden="true"><use href="#icon-logout" /></svg>
+      Sign out
+    </button>
   </div>
 </aside>

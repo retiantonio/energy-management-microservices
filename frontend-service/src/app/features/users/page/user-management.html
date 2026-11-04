@@ -8,21 +8,28 @@
   <div class="search-form">
     <label for="user-search">Search users</label>
     <span class="search-controls">
-      <input
-        id="user-search"
-        name="searchTerm"
-        type="search"
-        placeholder="Name, email, address, role, or ID"
-        [ngModel]="searchTerm()"
-        (ngModelChange)="searchTerm.set($event)"
-      />
+      <span class="field-control">
+        <svg class="field-icon" aria-hidden="true"><use href="#icon-search" /></svg>
+        <input
+          id="user-search"
+          name="searchTerm"
+          type="search"
+          placeholder="Name, email, address, role, or ID"
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </span>
       @if (searchTerm()) {
-        <button class="button-secondary" type="button" (click)="clearSearch()">Clear</button>
+        <button class="button-secondary" type="button" (click)="clearSearch()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+          Clear
+        </button>
       }
     </span>
   </div>
 
   <button type="button" (click)="openCreateForm()">
+    <svg class="button-icon" aria-hidden="true"><use href="#icon-user-plus" /></svg>
     Add user
   </button>
 </section>
@@ -37,75 +44,110 @@
     <form class="user-form" (ngSubmit)="createUser()">
       <label>
         Role
-        <select name="createRole" [(ngModel)]="createForm.role">
-          <option value="CLIENT">Client</option>
-          <option value="ADMIN">Administrator</option>
-        </select>
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-shield" /></svg>
+          <select name="createRole" [(ngModel)]="createForm.role">
+            <option value="CLIENT">Client</option>
+            <option value="ADMIN">Administrator</option>
+          </select>
+        </span>
       </label>
       <label>
         Username
-        <input
-          name="createUsername"
-          type="text"
-          minlength="4"
-          maxlength="20"
-          autocomplete="username"
-          [(ngModel)]="createForm.username"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <input
+            name="createUsername"
+            type="text"
+            minlength="4"
+            maxlength="20"
+            autocomplete="username"
+            [(ngModel)]="createForm.username"
+            required
+          />
+        </span>
       </label>
       <label>
         Password
-        <input
-          name="createPassword"
-          type="password"
-          minlength="8"
-          maxlength="72"
-          autocomplete="new-password"
-          [(ngModel)]="createForm.password"
-          required
-        />
+        <span class="field-control password-field">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-lock" /></svg>
+          <input
+            name="createPassword"
+            [type]="createPasswordVisible() ? 'text' : 'password'"
+            minlength="8"
+            maxlength="72"
+            autocomplete="new-password"
+            [(ngModel)]="createForm.password"
+            required
+          />
+          <button
+            class="password-toggle"
+            type="button"
+            (click)="createPasswordVisible.set(!createPasswordVisible())"
+            [attr.aria-label]="createPasswordVisible() ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="createPasswordVisible()"
+          >
+            <svg class="button-icon" aria-hidden="true">
+              <use [attr.href]="createPasswordVisible() ? '#icon-eye-off' : '#icon-eye'" />
+            </svg>
+          </button>
+        </span>
       </label>
       <label>
         Name
-        <input
-          name="createName"
-          type="text"
-          minlength="5"
-          maxlength="20"
-          [(ngModel)]="createForm.name"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+          <input
+            name="createName"
+            type="text"
+            minlength="5"
+            maxlength="20"
+            [(ngModel)]="createForm.name"
+            required
+          />
+        </span>
       </label>
       <label>
         Email
-        <input
-          name="createEmail"
-          type="email"
-          maxlength="100"
-          autocomplete="email"
-          [(ngModel)]="createForm.email"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-mail" /></svg>
+          <input
+            name="createEmail"
+            type="email"
+            maxlength="100"
+            autocomplete="email"
+            [(ngModel)]="createForm.email"
+            required
+          />
+        </span>
       </label>
       <label>
         Address
-        <input
-          name="createAddress"
-          type="text"
-          minlength="5"
-          maxlength="255"
-          autocomplete="street-address"
-          [(ngModel)]="createForm.address"
-          required
-        />
+        <span class="field-control">
+          <svg class="field-icon" aria-hidden="true"><use href="#icon-map-pin" /></svg>
+          <input
+            name="createAddress"
+            type="text"
+            minlength="5"
+            maxlength="255"
+            autocomplete="street-address"
+            [(ngModel)]="createForm.address"
+            required
+          />
+        </span>
       </label>
       @if (createUserError(); as error) {
         <app-http-error-notice [details]="error" />
       }
       <div class="form-actions">
-        <button type="submit" [disabled]="isSaving()">Create user</button>
-        <button class="button-secondary" type="button" (click)="closeCreateForm()">Cancel</button>
+        <button type="submit" [disabled]="isSaving()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-user-plus" /></svg>
+          Create user
+        </button>
+        <button class="button-secondary" type="button" (click)="closeCreateForm()">
+          <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
+          Cancel
+        </button>
       </div>
     </form>
 </dialog>
@@ -140,63 +182,98 @@
           <form class="user-form" (ngSubmit)="saveChanges(user)">
             <label>
               Username
-              <input
-                name="editUsername"
-                type="text"
-                minlength="4"
-                maxlength="20"
-                autocomplete="username"
-                placeholder="Leave blank to keep current username"
-                [(ngModel)]="editForm.username"
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+                <input
+                  name="editUsername"
+                  type="text"
+                  minlength="4"
+                  maxlength="20"
+                  autocomplete="username"
+                  placeholder="Leave blank to keep current username"
+                  [(ngModel)]="editForm.username"
+                />
+              </span>
             </label>
             <label>
               New password
-              <input
-                name="editPassword"
-                type="password"
-                minlength="8"
-                maxlength="72"
-                autocomplete="new-password"
-                placeholder="Leave blank to keep current password"
-                [(ngModel)]="editForm.password"
-              />
+              <span class="field-control password-field">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-lock" /></svg>
+                <input
+                  name="editPassword"
+                  [type]="editPasswordVisible() ? 'text' : 'password'"
+                  minlength="8"
+                  maxlength="72"
+                  autocomplete="new-password"
+                  placeholder="Leave blank to keep current password"
+                  [(ngModel)]="editForm.password"
+                />
+                <button
+                  class="password-toggle"
+                  type="button"
+                  (click)="editPasswordVisible.set(!editPasswordVisible())"
+                  [attr.aria-label]="editPasswordVisible() ? 'Hide password' : 'Show password'"
+                  [attr.aria-pressed]="editPasswordVisible()"
+                >
+                  <svg class="button-icon" aria-hidden="true">
+                    <use [attr.href]="editPasswordVisible() ? '#icon-eye-off' : '#icon-eye'" />
+                  </svg>
+                </button>
+              </span>
             </label>
             <label>
               Name
-              <input
-                name="editName"
-                type="text"
-                minlength="5"
-                maxlength="20"
-                [(ngModel)]="editForm.name"
-                required
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-user" /></svg>
+                <input
+                  name="editName"
+                  type="text"
+                  minlength="5"
+                  maxlength="20"
+                  [(ngModel)]="editForm.name"
+                  required
+                />
+              </span>
             </label>
             <label>
               Email
-              <input
-                name="editEmail"
-                type="email"
-                maxlength="100"
-                [(ngModel)]="editForm.email"
-                required
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-mail" /></svg>
+                <input
+                  name="editEmail"
+                  type="email"
+                  maxlength="100"
+                  [(ngModel)]="editForm.email"
+                  required
+                />
+              </span>
             </label>
             <label>
               Address
-              <input
-                name="editAddress"
-                type="text"
-                minlength="5"
-                maxlength="255"
-                [(ngModel)]="editForm.address"
-                required
-              />
+              <span class="field-control">
+                <svg class="field-icon" aria-hidden="true"><use href="#icon-map-pin" /></svg>
+                <input
+                  name="editAddress"
+                  type="text"
+                  minlength="5"
+                  maxlength="255"
+                  [(ngModel)]="editForm.address"
+                  required
+                />
+              </span>
             </label>
+
+            @if (editUserError(); as error) {
+              <app-http-error-notice [details]="error" />
+            }
+
             <div class="form-actions">
-              <button type="submit" [disabled]="isSaving()">Save changes</button>
+              <button type="submit" [disabled]="isSaving()">
+                <svg class="button-icon" aria-hidden="true"><use href="#icon-check" /></svg>
+                Save changes
+              </button>
               <button class="button-secondary" type="button" (click)="cancelEditing()">
+                <svg class="button-icon" aria-hidden="true"><use href="#icon-close" /></svg>
                 Cancel
               </button>
             </div>

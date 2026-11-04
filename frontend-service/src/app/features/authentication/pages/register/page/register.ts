@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../login/services/auth.service';
 import { getAuthErrorDetails } from '../../../shared/auth-error-message';
 import { DeverBrand } from '../../../../../shared/components/dever-brand/dever-brand';
@@ -14,6 +14,7 @@ import { HttpErrorNotice } from '../../../../../core/components/http-error-notic
   templateUrl: './register.html',
 })
 export class RegisterPage {
+  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
   protected readonly authResponse = this.authService.authResponse;
@@ -61,6 +62,7 @@ export class RegisterPage {
         next: () => {
           this.isSubmitting.set(false);
           this.isRegistered.set(true);
+          void this.router.navigateByUrl('/dashboard');
         },
         error: (error: unknown) => {
           this.isSubmitting.set(false);
