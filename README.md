@@ -1,93 +1,117 @@
-# DS2026_30242_Reti_Antonio_Assignment_1
+# Energy Management Microservices
 
+A small distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) is part of the project and covers all of the back-end endpoints, so every feature can be used from the browser.
 
+![Deployment diagram](deployment-diagram.drawio.png)
+<!-- Export deployment-diagram.drawio to PNG from diagrams.net and keep it next to this README. -->
 
-## Getting started
+## Architecture
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+| Component | Port (internal) | Responsibility |
+|---|---|---|
+| **Traefik** (API gateway) | 80 | Single public entry point. Serves the website at `/` and the API under `/api` (the prefix is stripped before forwarding). Validates JWTs through ForwardAuth before `/api/users` and `/api/devices` calls reach the services. |
+| **frontend-service** (Angular) | 80 | The website. Lets users register, log in and use every user and device endpoint through the gateway. |
+| **auth-service** | 8081 | Register, login, JWT issuing and validation. Stores credentials (`credential-db`). |
+| **user-service** | 8082 | User profile CRUD (clients and admins). Stores profiles (`user-db`). |
+| **device-service** | 8083 | Device CRUD and device-to-user assignment. Stores devices (`device-db`). |
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+How the services talk to each other:
 
-## Add your files
+- **Browser → Traefik:** the website is served from `http://localhost`, and its API calls go to `http://localhost/api/...` on the same origin.
+- **Traefik → service:** for `/api/users` and `/api/devices`, Traefik first calls `auth-service` (`GET /auth/validate`) and forwards the user's id and role as `X-User-Id` / `X-User-Role` headers.
+- **auth-service → user-service:** `POST /users` when someone registers.
+- **user-service → auth-service:** `POST / PUT / DELETE /credentials` when a user is created, updated or deleted.
+- **user-service → device-service:** `DELETE /devices/user/{id}/assignments` when a user is deleted.
+- **device-service → user-service:** `GET /users?id=` to check that an owner exists before assigning a device.
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+Service-to-service calls use the `X-Internal-Key` header and are only possible inside the Docker network.
+
+Roles: `ADMIN` (full access), `CLIENT` (can only see their own profile and devices).
+
+## Prerequisites
+
+- Docker and Docker Compose
+
+## User manual
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd <repo-folder>
+```
+
+### 2. Create the `.env` file
+
+In the repository root (next to `docker-compose.yml`), create a file named `.env` with two values:
+
+```env
+JWT_SECRET=replace-with-a-long-random-string-at-least-32-characters
+INTERNAL_API_KEY=replace-with-another-random-string
+```
+
+- `JWT_SECRET` signs the JWT tokens (use at least 32 characters).
+- `INTERNAL_API_KEY` authenticates service-to-service calls. All services read the same value.
+
+`.env` is git-ignored, so your secrets are never committed.
+
+### 3. Build and start everything
+
+```bash
+docker compose up -d --build
+```
+
+This builds the frontend and the three services, and starts the three databases and Traefik. Wait until all containers are up:
+
+```bash
+docker compose ps
+```
+
+### 4. Use the application
+
+Open **http://localhost** in your browser (no port needed). This is the Angular website. Register a client account or log in, then use the user and device pages. Admins can manage everything; clients only see their own profile and devices.
+
+The first admin account is created by the database seed script. Log in with that admin's username and password to create other users and devices.
+
+The API behind the website is available at **http://localhost/api**, for example:
+
+- `POST http://localhost/api/auth/register`: create a client account
+- `POST http://localhost/api/auth/login`: get a JWT
+- `GET http://localhost/api/users` and `GET http://localhost/api/devices`: send `Authorization: Bearer <token>`
+
+The Traefik dashboard (development only) is at http://localhost:8080.
+
+### 5. Explore the endpoints with Swagger (local only)
+
+Each back-end service has its own Swagger UI for studying and trying the endpoints. Swagger is **not** exposed through Traefik. It is only reachable from your own machine, because the compose file binds the service ports to `127.0.0.1`:
+
+| Service | Swagger UI |
+|---|---|
+| auth-service | http://localhost:8081/swagger-ui.html |
+| user-service | http://localhost:8082/swagger-ui.html |
+| device-service | http://localhost:8083/swagger-ui.html |
+
+Calls from Swagger bypass Traefik, so a JWT is not used there. Click **Authorize** and fill in `X-User-Id` and `X-User-Role` (for example `ADMIN`) to simulate what the gateway normally injects.
+
+> For a real deployment, remove the `ports:` entries of the services and databases in `docker-compose.yml`. Anyone who could reach those ports could skip the gateway's JWT check.
+
+### 6. Stop the application
+
+```bash
+docker compose down        # stop containers, keep database data
+docker compose down -v     # stop containers and delete database data
+```
+
+## Project structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/ds2026_30242_reti_antonio/ds2026_30242_reti_antonio_assignment_1.git
-git branch -M main
-git push -uf origin main
+.
+├── authentication-service/   # auth-service (Spring Boot)
+├── user-service/             # user-service (Spring Boot)
+├── device-service/           # device-service (Spring Boot)
+├── frontend-service/         # Angular website
+├── db/                       # database images and seed scripts
+├── docker-compose.yml
+├── .env                      # not committed
+└── README.md
 ```
-
-## Integrate with your tools
-
-* [Set up project integrations](https://gitlab.com/ds2026_30242_reti_antonio/ds2026_30242_reti_antonio_assignment_1/-/settings/integrations)
-
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
