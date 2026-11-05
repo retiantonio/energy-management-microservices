@@ -1,9 +1,8 @@
 # Energy Management Microservices
 
-A small distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) is part of the project and covers all of the back-end endpoints, so every feature can be used from the browser.
+A small distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) covers all of the back-end endpoints, so every feature can be used from the browser.
 
 ![Deployment diagram](deployment-diagram.drawio.png)
-<!-- Export deployment-diagram.drawio to PNG from diagrams.net and keep it next to this README. -->
 
 ## Architecture
 
