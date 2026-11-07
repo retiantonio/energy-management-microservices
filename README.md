@@ -121,9 +121,9 @@ Each back-end service has its own Swagger UI for studying and trying the endpoin
 
 | Service | Swagger UI |
 |---|---|
-| auth-service | http://localhost:8081/swagger-ui.html |
-| user-service | http://localhost:8082/swagger-ui.html |
-| device-service | http://localhost:8083/swagger-ui.html |
+| auth-service | http://localhost:8081/swagger-ui/index.html |
+| user-service | http://localhost:8082/swagger-ui/index.html |
+| device-service | http://localhost:8083/swagger-ui/index.html |
 
 Calls from Swagger bypass Traefik, so a JWT is not used there. Click **Authorize** and fill in `X-User-Id` and `X-User-Role` (for example `ADMIN`) to simulate what the gateway normally injects.
 
