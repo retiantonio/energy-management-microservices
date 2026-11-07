@@ -2,7 +2,42 @@
 
 A small distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) covers all of the back-end endpoints, so every feature can be used from the browser.
 
-![Deployment diagram](deployment-diagram.drawio.png)
+## Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="readme/login.png" alt="Login page" width="420" />
+        <br />
+        <strong>Login</strong>
+      </td>
+      <td align="center">
+        <img src="readme/dashboard.png" alt="Dashboard" width="420" />
+        <br />
+        <strong>Dashboard</strong>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="readme/users.png" alt="Users management page" width="420" />
+        <br />
+        <strong>Users</strong>
+      </td>
+      <td align="center">
+        <img src="readme/devices.png" alt="Devices management page" width="420" />
+        <br />
+        <strong>Devices</strong>
+      </td>
+    </tr>
+  </table>
+</div>
+
+## Deployment Diagram
+
+<p align="center">
+  <img src="readme/deployment-diagram.drawio.png" alt="System deployment diagram" width="900" />
+</p>
 
 ## Architecture
 

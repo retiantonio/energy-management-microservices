@@ -127,7 +127,7 @@ services:
       - "traefik.http.middlewares.jwt-auth.forwardauth.authResponseHeaders=X-User-Id,X-User-Role"
  
       # change if frontend not on docker
-      # - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
+      # - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:4200"
       - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
       - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=Authorization,Content-Type"
       - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
