@@ -1,6 +1,22 @@
-# Energy Management Microservices
+<h1 align="center">⚡ Energy Management Microservices</h1>
 
-A small distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) covers all of the back-end endpoints, so every feature can be used from the browser.
+<p align="center">
+  <strong>Distributed Platform for User & Device Management</strong><br>
+  Built with Spring Boot, Angular, PostgreSQL, Docker, and Traefik
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Backend-Spring%20Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot">
+  <img src="https://img.shields.io/badge/Frontend-Angular-DD0031?style=flat-square&logo=angular&logoColor=white" alt="Angular">
+  <img src="https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/Deployment-Docker%20Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
+  <img src="https://img.shields.io/badge/Gateway-Traefik-24A1C1?style=flat-square&logo=traefikproxy&logoColor=white" alt="Traefik">
+  <img src="https://img.shields.io/badge/Auth-JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white" alt="JWT">
+</p>
+
+<hr>
+
+A distributed system for managing **users** and their **devices**, built with Spring Boot microservices behind a Traefik API gateway. Authentication is JWT-based, and each service owns its own PostgreSQL database. An **Angular website** (`frontend-service`) covers all of the back-end endpoints, so every feature can be used from the browser.
 
 ## Screenshots
 
