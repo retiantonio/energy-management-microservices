@@ -1,4 +1,4 @@
-<h1 align="center">⚡ Energy Management Microservices</h1>
+<h1 align="center">Energy Management Microservices</h1>
 
 <p align="center">
   <strong>Distributed Platform for User & Device Management</strong><br>
